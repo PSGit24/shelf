@@ -209,11 +209,18 @@ function App() {
     
     if (sharedUrl && user) {
       console.log("[PWA Share] Received shared link:", sharedUrl, sharedTitle);
-      // Pre-fill form with shared data
+      // Extract clean URL if text contains mixed content
+      let cleanUrl = sharedUrl;
+      const urlMatch = sharedUrl.match(/https?:\/\/[^\s]+/);
+      if (urlMatch) {
+        cleanUrl = urlMatch[0];
+      }
+      
+      // Pre-fill form - use "Inbox" as default category for quick saves
       setForm({
-        title: sharedTitle || sharedUrl,
-        url: sharedUrl.startsWith('http') ? sharedUrl : `https://${sharedUrl}`,
-        category: "",
+        title: sharedTitle || cleanUrl.replace(/^https?:\/\//, '').split('/')[0],
+        url: cleanUrl.startsWith('http') ? cleanUrl : `https://${cleanUrl}`,
+        category: "Inbox",  // Default to Inbox for quick saves
         notes: "",
         emoji: "link"
       });
