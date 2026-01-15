@@ -201,6 +201,30 @@ function App() {
       .catch(err => console.error("Failed to load public collections:", err));
   }, []);
 
+  // Handle shared URLs from PWA Share Target
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sharedUrl = params.get('url') || params.get('text');
+    const sharedTitle = params.get('title') || '';
+    
+    if (sharedUrl && user) {
+      console.log("[PWA Share] Received shared link:", sharedUrl, sharedTitle);
+      // Pre-fill form with shared data
+      setForm({
+        title: sharedTitle || sharedUrl,
+        url: sharedUrl.startsWith('http') ? sharedUrl : `https://${sharedUrl}`,
+        category: "",
+        notes: "",
+        emoji: "link"
+      });
+      setDialogType("link");
+      setEditingId(null);
+      setOpenDialog(true);
+      // Clean up URL params
+      window.history.replaceState({}, '', '/');
+    }
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       fetchLinks();
