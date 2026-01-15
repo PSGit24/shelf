@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: shelf-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false  # You'll set this manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # You'll set this manually in Render dashboard
