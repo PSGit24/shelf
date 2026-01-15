@@ -762,13 +762,20 @@ function App() {
         }}
       >
         <Toolbar sx={{ 
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "stretch", sm: "center" },
           justifyContent: "space-between", 
-          flexWrap: "wrap", 
-          gap: 2,
+          gap: { xs: 1.5, sm: 2 },
           px: { xs: 2, sm: 3 }
         }}>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            {/* Logo - Always Left */}
+          {/* Top Row on Mobile: Logo + User Icon */}
+          <Stack 
+            direction="row" 
+            alignItems="center" 
+            justifyContent="space-between"
+            sx={{ width: { xs: "100%", sm: "auto" } }}
+          >
+            {/* Logo */}
             <Typography
               variant="h6"
               onClick={() => setSelectedCategory("All")}
@@ -783,11 +790,27 @@ function App() {
             >
               SHELF
             </Typography>
+
+            {/* User Menu - Visible on mobile in this row */}
+            <Box sx={{ display: { xs: "block", sm: "none" } }}>
+              <Tooltip title="Account Settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, border: "2px solid #000000" }}>
+                  <Avatar 
+                    alt={user.username} 
+                    src={user.avatarUrl} 
+                    sx={{ bgcolor: "#000000", color: "#ffffff", fontWeight: "bold", width: 36, height: 36 }}
+                  >
+                    {user.username.charAt(0).toUpperCase()}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Stack>
 
-          {/* Spacer to push search/menu to right */}
-          <Box sx={{ flexGrow: 1 }} />
+          {/* Spacer - Desktop only */}
+          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
 
+          {/* Search + User Menu Row */}
           <Stack 
             direction="row" 
             spacing={2} 
@@ -801,6 +824,7 @@ function App() {
               onChange={(e) => setSearch(e.target.value)}
               variant="outlined"
               sx={{
+                flexGrow: 1,
                 width: { xs: "100%", sm: 240 },
                 "& .MuiInputBase-input": {
                   fontWeight: 600,
@@ -810,8 +834,8 @@ function App() {
               }}
             />
             
-            {/* User Menu */}
-            <Box sx={{ flexGrow: 0 }}>
+            {/* User Menu - Desktop only */}
+            <Box sx={{ display: { xs: "none", sm: "block" } }}>
               <Tooltip title="Account Settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, border: "2px solid #000000" }}>
                   <Avatar 
@@ -823,25 +847,27 @@ function App() {
                   </Avatar>
                 </IconButton>
               </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                keepMounted
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                <MenuItem onClick={handleOpenSettings}>
-                  <Typography textAlign="center">Settings</Typography>
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  <Typography textAlign="center">Logout</Typography>
-                </MenuItem>
-              </Menu>
             </Box>
           </Stack>
+          
+          {/* User Menu Dropdown - shared by mobile and desktop */}
+          <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            <MenuItem onClick={handleOpenSettings}>
+              <Typography textAlign="center">Settings</Typography>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <Typography textAlign="center">Logout</Typography>
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
 
@@ -1074,7 +1100,7 @@ function App() {
           </Box>
 
           {!loading && selectedCategory === "All" && !search && (
-            <Grid container spacing={4}>
+            <Grid container spacing={{ xs: 2, sm: 4 }} justifyContent="center">
               {activeTab === "your" ? displayCategories.map((category) => {
                 // Get ALL links in category to find icon (including placeholders)
                 const allCategoryLinks = links.filter(l => l.category === category);
@@ -1097,7 +1123,7 @@ function App() {
                 console.log(`[DEBUG] Category: ${category}, Links: ${count}, storedIcon: '${storedIcon}', emoji: '${emoji}'`);
 
                 return (
-                  <Grid item key={category} xs={12} sm={6} md={4}>
+                  <Grid item key={category} xs={10} sm={6} md={4} sx={{ mx: { xs: "auto", sm: 0 } }}>
                     <Card
                       onClick={() => setSelectedCategory(category)}
                       sx={{
@@ -1173,7 +1199,7 @@ function App() {
                 }
 
                 return (
-                <Grid item key={pub._id || pub.name || pub.category} xs={12} sm={6} md={3}>
+                <Grid item key={pub._id || pub.name || pub.category} xs={10} sm={6} md={3} sx={{ mx: { xs: "auto", sm: 0 } }}>
                   <Card
                     onClick={() => setSelectedCategory(pub.name || pub.category)}
                     sx={{
@@ -1218,7 +1244,7 @@ function App() {
               ); })}
               
               {activeTab === "your" && (
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={10} sm={6} md={3} sx={{ mx: { xs: "auto", sm: 0 } }}>
                   <Card
                     onClick={() => handleOpenDialog("collection")}
                     sx={{
@@ -1252,9 +1278,9 @@ function App() {
 
 
           {!loading && (selectedCategory !== "All" || search) && (
-            <Grid container spacing={3} alignItems="flex-start">
+            <Grid container spacing={{ xs: 2, sm: 3 }} alignItems="flex-start" justifyContent="center">
             {filteredLinks.map((link) => (
-              <Grid item key={link.id} xs={12} sm={6} md={3}>
+              <Grid item key={link.id} xs={10} sm={6} md={3} sx={{ mx: { xs: "auto", sm: 0 } }}>
                 <Box
                   sx={{
                     height: "100%",
@@ -1445,7 +1471,7 @@ function App() {
             ))}
             
             {/* Add Link Card - Available in both private and PUBLIC modes */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={10} sm={6} md={3} sx={{ mx: { xs: "auto", sm: 0 } }}>
                 <Box sx={{ height: "100%" }}> 
                   <Card
                     sx={{
