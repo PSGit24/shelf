@@ -20,11 +20,15 @@ const { getAllLinks, addLink, deleteLink, updateLink, renameCategory, deleteCate
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Allow all origins in development (more flexible)
-app.use(cors({
-  origin: true, // Allow any origin in development
+// CORS configuration for production
+const corsOptions = {
+  origin: true, // Allow any origin
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const jwt = require("jsonwebtoken");
