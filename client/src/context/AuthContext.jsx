@@ -2,6 +2,9 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
+// Use environment variable for API URL
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
+
 export function useAuth() {
   return useContext(AuthContext);
 }
@@ -22,10 +25,8 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
   const login = async (username, password) => {
-    // Hardcoded for debugging
-    const baseUrl = "http://localhost:4000/api";
-    console.log("Login Request to:", `${baseUrl}/auth/login`);
-    const res = await fetch(`${baseUrl}/auth/login`, {
+    console.log("Login Request to:", `${API_BASE}/auth/login`);
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -41,10 +42,8 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (username, password) => {
-    // Hardcoded for debugging
-    const baseUrl = "http://localhost:4000/api";
-    console.log("Signup Request to:", `${baseUrl}/auth/signup`);
-    const res = await fetch(`${baseUrl}/auth/signup`, {
+    console.log("Signup Request to:", `${API_BASE}/auth/signup`);
+    const res = await fetch(`${API_BASE}/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -67,11 +66,9 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = async (data) => {
-    // Hardcoded for debugging
-    const baseUrl = "http://localhost:4000/api";
-    console.log("Update Profile Request to:", `${baseUrl}/auth/profile`);
+    console.log("Update Profile Request to:", `${API_BASE}/auth/profile`);
     
-    const res = await fetch(`${baseUrl}/auth/profile`, {
+    const res = await fetch(`${API_BASE}/auth/profile`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
